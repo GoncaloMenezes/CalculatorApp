@@ -18,32 +18,32 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/button_history"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:text="History" />
 
         <HorizontalScrollView
+            android:id="@+id/horizontalScrollView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:scrollbars="none"
             android:fillViewport="true">
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/textView_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:overScrollMode="ifContentScrolls"
-                android:text="5+51-2"
                 android:textAlignment="textEnd"
                 android:textSize="50sp" />
         </HorizontalScrollView>
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/textView_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView"
             android:textAlignment="textEnd"
             android:textColor="#808080"
             android:textSize="60sp" />
@@ -64,9 +64,10 @@
             android:text="AC" />
 
         <Button
-            android:id="@+id/button_clear"
+            android:id="@+id/button_delete"
             style="@style/CalculatorButton"
-            android:text="-" />
+            android:text="⌫"
+            />
 
         <Button
             android:id="@+id/button_percentage"
