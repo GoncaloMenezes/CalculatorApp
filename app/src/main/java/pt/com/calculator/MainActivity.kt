@@ -12,6 +12,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val calculator = Calculator()
+
         var canAddOperation: Boolean = false
         var canAddDecimalPoint: Boolean = true
         var canAddNumber: Boolean = true
@@ -19,7 +21,9 @@ class MainActivity : AppCompatActivity() {
         val clearAllBtn: Button = findViewById(R.id.button_clearAll)
         val deleteBtn: Button = findViewById(R.id.button_delete)
 
-        val horizontalScrollView: HorizontalScrollView = findViewById(R.id.horizontalScrollView)
+        val horizontalScrollViewInput: HorizontalScrollView = findViewById(R.id.horizontalScrollView_input)
+        val horizontalScrollViewResult: HorizontalScrollView = findViewById(R.id.horizontalScrollView_result)
+
         val inputTV: TextView = findViewById(R.id.textView_input)
         val resultTV: TextView = findViewById(R.id.textView_result)
 
@@ -39,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         val multiplyBtn: Button = findViewById(R.id.button_multiply)
         val subtractBtn: Button = findViewById(R.id.button_subtract)
         val additionBtn: Button = findViewById(R.id.button_addition)
-        val percentageBtn: Button = findViewById(R.id.button_percentage)
+        val roundBtn: Button = findViewById(R.id.button_round)
 
         val equalsBtn: Button = findViewById(R.id.button_equals)
         fun endsWithOperator(input: CharSequence): Boolean {
@@ -48,15 +52,15 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        fun handleHorizontalScroll() {
+        fun handleHorizontalScroll(textView: TextView, scrollView: HorizontalScrollView) {
             // Measure the width of the content and compare it to the width of the visible area
-            inputTV.post {
-                val contentWidth = inputTV.width
-                val scrollViewWidth = horizontalScrollView.width
+            textView.post {
+                val contentWidth = textView.width
+                val scrollViewWidth =  scrollView.width
 
                 if (contentWidth > scrollViewWidth) {
-                    horizontalScrollView.post {
-                        horizontalScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
+                    scrollView.post {
+                        scrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
                     }
                 }
             }
@@ -68,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                     inputTV.append("0")
                 }
                 inputTV.append(".")
-                handleHorizontalScroll()
+                handleHorizontalScroll(inputTV, horizontalScrollViewInput)
                 canAddOperation = false
                 canAddDecimalPoint = false
                 canAddNumber = true
@@ -78,11 +82,10 @@ class MainActivity : AppCompatActivity() {
         fun handleNumber(number: String) {
             if (canAddNumber) {
                 inputTV.append(number)
-                handleHorizontalScroll()
+                handleHorizontalScroll(inputTV, horizontalScrollViewInput)
                 canAddOperation = true
             }
         }
-
 
         val numberClickListener = View.OnClickListener { view ->
             if (view is Button) {
@@ -101,6 +104,7 @@ class MainActivity : AppCompatActivity() {
                 if (canAddOperation) {
                     // Append the operator and reset the decimal allowance
                     inputTV.append(view.text)
+                    handleHorizontalScroll(inputTV, horizontalScrollViewInput)
                     canAddOperation = false
                     canAddDecimalPoint = true
                     canAddNumber = true
@@ -126,25 +130,19 @@ class MainActivity : AppCompatActivity() {
         additionBtn.setOnClickListener(operatorClickListener)
 
         equalsBtn.setOnClickListener {
-            resultTV.text = "To implement"
+            if(inputTV.text.isNotEmpty() && endsWithOperator(inputTV.text) && inputTV.text.endsWith(".")){
+                resultTV.text = calculator.evaluateExpression(inputTV.text)
+                handleHorizontalScroll(resultTV, horizontalScrollViewResult)
+            }
         }
 
-        percentageBtn.setOnClickListener { view ->
+        roundBtn.setOnClickListener { view ->
             if (view is Button) {
-                if (inputTV.text.isNotEmpty() &&
-                    !inputTV.text.endsWith("%") && // Cannot have another % at the end
-                    !inputTV.text.endsWith("+") &&
-                    !inputTV.text.endsWith("−") &&
-                    !inputTV.text.endsWith("×") &&
-                    !inputTV.text.endsWith("÷")
-                ) { // Check if the last character is not an operator
-                    inputTV.append("%")
-                    canAddDecimalPoint = false
-                    canAddOperation = true
-                    canAddNumber = false
+                if(inputTV.text.isNotEmpty() && endsWithOperator(inputTV.text) && inputTV.text.endsWith(".")){
+                    resultTV.text = calculator.roundResult( calculator.evaluateExpression(inputTV.text) )
+                    handleHorizontalScroll(resultTV, horizontalScrollViewResult)
                 }
             }
-
         }
 
         clearAllBtn.setOnClickListener {

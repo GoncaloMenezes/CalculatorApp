@@ -25,7 +25,7 @@
             android:text="History" />
 
         <HorizontalScrollView
-            android:id="@+id/horizontalScrollView"
+            android:id="@+id/horizontalScrollView_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="none"
@@ -40,13 +40,21 @@
                 android:textSize="50sp" />
         </HorizontalScrollView>
 
-        <TextView
-            android:id="@+id/textView_result"
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="textEnd"
-            android:textColor="#808080"
-            android:textSize="60sp" />
+            android:scrollbars="none"
+            android:fillViewport="true">
+            <TextView
+                android:id="@+id/textView_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:textColor="#808080"
+                android:textSize="60sp" />
+        </HorizontalScrollView>
+
     </LinearLayout>
 
     <GridLayout
@@ -70,9 +78,9 @@
             />
 
         <Button
-            android:id="@+id/button_percentage"
+            android:id="@+id/button_round"
             style="@style/CalculatorButton"
-            android:text="%" />
+            android:text="≃" />
 
         <Button
             android:id="@+id/button_divide"
