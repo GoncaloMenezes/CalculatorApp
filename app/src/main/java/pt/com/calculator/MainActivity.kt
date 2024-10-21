@@ -130,7 +130,7 @@ class MainActivity : AppCompatActivity() {
         additionBtn.setOnClickListener(operatorClickListener)
 
         equalsBtn.setOnClickListener {
-            if(inputTV.text.isNotEmpty() && endsWithOperator(inputTV.text) && inputTV.text.endsWith(".")){
+            if(inputTV.text.isNotEmpty() && !endsWithOperator(inputTV.text) && !inputTV.text.endsWith(".")){
                 resultTV.text = calculator.evaluateExpression(inputTV.text)
                 handleHorizontalScroll(resultTV, horizontalScrollViewResult)
             }
@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity() {
 
         roundBtn.setOnClickListener { view ->
             if (view is Button) {
-                if(inputTV.text.isNotEmpty() && endsWithOperator(inputTV.text) && inputTV.text.endsWith(".")){
+                if(inputTV.text.isNotEmpty() && !endsWithOperator(inputTV.text) && !inputTV.text.endsWith(".")){
                     resultTV.text = calculator.roundResult( calculator.evaluateExpression(inputTV.text) )
                     handleHorizontalScroll(resultTV, horizontalScrollViewResult)
                 }
