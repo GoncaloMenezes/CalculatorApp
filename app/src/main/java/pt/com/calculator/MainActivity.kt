@@ -2,10 +2,16 @@ package pt.com.calculator
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.HorizontalScrollView
 import android.widget.TextView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import pt.com.calculator.room.AppDatabase
+import pt.com.calculator.room.Calculation
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,6 +19,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val calculator = Calculator()
+        val db = AppDatabase.getInstance(this)
+        val calculationDao = db.calculationDao()
 
         var canAddOperation: Boolean = false
         var canAddDecimalPoint: Boolean = true
@@ -43,9 +51,20 @@ class MainActivity : AppCompatActivity() {
         val multiplyBtn: Button = findViewById(R.id.button_multiply)
         val subtractBtn: Button = findViewById(R.id.button_subtract)
         val additionBtn: Button = findViewById(R.id.button_addition)
-        val roundBtn: Button = findViewById(R.id.button_round)
 
+        val roundBtn: Button = findViewById(R.id.button_round)
         val equalsBtn: Button = findViewById(R.id.button_equals)
+
+        fun insertCalculation(){
+            CoroutineScope(Dispatchers.IO).launch {
+                val newCalculation = Calculation(expression = inputTV.text.toString(), result = resultTV.text.toString())
+
+                calculationDao.insert(newCalculation)
+
+                Log.d("MAIN-INSERT", calculationDao.getAll().toString())
+            }
+        }
+
         fun endsWithOperator(input: CharSequence): Boolean {
             return input.endsWith("+") || input.endsWith("-") || input.endsWith("×") || input.endsWith(
                 "÷"
@@ -132,6 +151,7 @@ class MainActivity : AppCompatActivity() {
         equalsBtn.setOnClickListener {
             if(inputTV.text.isNotEmpty() && !endsWithOperator(inputTV.text) && !inputTV.text.endsWith(".")){
                 resultTV.text = calculator.evaluateExpression(inputTV.text)
+                insertCalculation()
                 handleHorizontalScroll(resultTV, horizontalScrollViewResult)
             }
         }
@@ -140,6 +160,7 @@ class MainActivity : AppCompatActivity() {
             if (view is Button) {
                 if(inputTV.text.isNotEmpty() && !endsWithOperator(inputTV.text) && !inputTV.text.endsWith(".")){
                     resultTV.text = calculator.roundResult( calculator.evaluateExpression(inputTV.text) )
+                    insertCalculation()
                     handleHorizontalScroll(resultTV, horizontalScrollViewResult)
                 }
             }
