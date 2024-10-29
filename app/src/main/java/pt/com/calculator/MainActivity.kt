@@ -1,5 +1,6 @@
 package pt.com.calculator
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -55,13 +56,13 @@ class MainActivity : AppCompatActivity() {
         val roundBtn: Button = findViewById(R.id.button_round)
         val equalsBtn: Button = findViewById(R.id.button_equals)
 
+        val historyBtn: Button = findViewById(R.id.button_history)
+
         fun insertCalculation(){
             CoroutineScope(Dispatchers.IO).launch {
                 val newCalculation = Calculation(expression = inputTV.text.toString(), result = resultTV.text.toString())
 
                 calculationDao.insert(newCalculation)
-
-                Log.d("MAIN-INSERT", calculationDao.getAll().toString())
             }
         }
 
@@ -147,7 +148,6 @@ class MainActivity : AppCompatActivity() {
         multiplyBtn.setOnClickListener(operatorClickListener)
         subtractBtn.setOnClickListener(operatorClickListener)
         additionBtn.setOnClickListener(operatorClickListener)
-
         equalsBtn.setOnClickListener {
             if(inputTV.text.isNotEmpty() && !endsWithOperator(inputTV.text) && !inputTV.text.endsWith(".")){
                 resultTV.text = calculator.evaluateExpression(inputTV.text)
@@ -182,6 +182,11 @@ class MainActivity : AppCompatActivity() {
                     canAddDecimalPoint = true
                 }
             }
+        }
+
+        historyBtn.setOnClickListener {
+            val intent: Intent = Intent(this, HistoryActivity::class.java)
+            startActivity(intent)
         }
     }
 }
