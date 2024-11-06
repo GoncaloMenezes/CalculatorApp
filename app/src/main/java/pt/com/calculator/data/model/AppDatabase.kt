@@ -1,9 +1,10 @@
-package pt.com.calculator.room
+package pt.com.calculator.data.model
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import pt.com.calculator.data.room.CalculationDao
 
 @Database(entities = [Calculation::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {

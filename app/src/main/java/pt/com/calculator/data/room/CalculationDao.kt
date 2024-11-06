@@ -1,9 +1,10 @@
-package pt.com.calculator.room
+package pt.com.calculator.data.room
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import pt.com.calculator.data.model.Calculation
 
 @Dao
 interface CalculationDao {

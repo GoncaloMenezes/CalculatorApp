@@ -1,15 +1,15 @@
-package pt.com.calculator
+package pt.com.calculator.utils
 
 fun main() {
 
     val x = Calculator()
 
-    x.evaluateExpression("455−1")
+    x.evaluateExpression("455−1", false)
 
 }
 class Calculator {
 
-    fun evaluateExpression(expression: CharSequence): CharSequence {
+    fun evaluateExpression(expression: CharSequence, roundResult: Boolean): CharSequence {
         println("Original: $expression")
 
         // Step 1: Convert the charsequence to a list
@@ -23,9 +23,14 @@ class Calculator {
         evaluateAdditionAndSubtraction(expressionList)
         println("After + | - : $expressionList")
 
+        val result: CharSequence
         println("Result: ${expressionList.first()}")
-        return expressionList.first()
-
+        if(roundResult){
+            result = String.format("%.1f", expressionList.first().toString().toDouble())
+        }else{
+            result = expressionList.first()
+        }
+        return result
     }
 
     private fun expressionToList(expression:CharSequence): MutableList<CharSequence> {
@@ -117,12 +122,6 @@ class Calculator {
                 }
             }
         }
-    }
-
-    fun roundResult(result: CharSequence): CharSequence {
-        val roundedResult = String.format("%.1f", result.toString().toDouble())
-        println(roundedResult)
-        return roundedResult
     }
 
 }

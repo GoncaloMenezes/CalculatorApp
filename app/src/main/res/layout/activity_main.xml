@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ui.main.MainActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -72,7 +72,7 @@
             android:text="AC" />
 
         <Button
-            android:id="@+id/button_delete"
+            android:id="@+id/button_clearLast"
             style="@style/CalculatorButton"
             android:text="⌫"
             />

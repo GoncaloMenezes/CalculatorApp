@@ -1,4 +1,4 @@
-package pt.com.calculator.room
+package pt.com.calculator.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

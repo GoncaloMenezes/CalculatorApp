@@ -52,4 +52,7 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$room_version")
     // To use Kotlin Symbol Processing (KSP)
     ksp("androidx.room:room-compiler:$room_version")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
+    val activity_version = "1.9.3"
+    implementation("androidx.activity:activity-ktx:$activity_version")
 }
