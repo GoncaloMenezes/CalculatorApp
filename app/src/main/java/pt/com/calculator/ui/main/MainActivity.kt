@@ -3,15 +3,14 @@ package pt.com.calculator.ui.main
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
 import android.widget.HorizontalScrollView
 import android.widget.TextView
 import pt.com.calculator.utils.Calculator
-import pt.com.calculator.R
 import pt.com.calculator.data.model.AppDatabase
 import pt.com.calculator.data.repository.CalculationRepository
 import pt.com.calculator.data.room.CalculationDao
 import androidx.activity.viewModels
+import pt.com.calculator.databinding.ActivityMainBinding
 import pt.com.calculator.ui.history.HistoryActivity
 
 class MainActivity : AppCompatActivity() {
@@ -29,93 +28,87 @@ class MainActivity : AppCompatActivity() {
         MainViewModelFactory(calculationRepository, calculator)
     }
 
+    private lateinit var activityMainBinding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        val inputTV: TextView = findViewById(R.id.textView_input)
-        val horizontalScrollViewInput: HorizontalScrollView = findViewById(R.id.horizontalScrollView_input)
-        val resultTV: TextView = findViewById(R.id.textView_result)
-        val horizontalScrollViewResult: HorizontalScrollView = findViewById(R.id.horizontalScrollView_result)
-
-        val historyBtn: Button = findViewById(R.id.button_history)
+        activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(activityMainBinding.root)
 
         setupClearBtns()
-        setupOperatorBtns(inputTV, horizontalScrollViewInput)
-        setupNumberBtns(inputTV, horizontalScrollViewInput)
-        setupDecimalBtn(inputTV, horizontalScrollViewInput)
-        setupEqualsBtns(resultTV, horizontalScrollViewResult)
+        setupOperatorBtns()
+        setupNumberBtns()
+        setupDecimalBtn()
+        setupEqualsBtns()
 
-        historyBtn.setOnClickListener {
+        activityMainBinding.buttonHistory.setOnClickListener {
             val intent: Intent = Intent(this, HistoryActivity::class.java)
             startActivity(intent)
         }
 
         viewModel.input.observe(this) { input ->
-            inputTV.text = input
+            activityMainBinding.textViewInput.text = input
         }
 
         viewModel.result.observe(this) { result ->
-            resultTV.text = result
+            activityMainBinding.textViewResult.text = result
         }
     }
 
-    private fun setupDecimalBtn(textView: TextView, scrollView: HorizontalScrollView){
-        findViewById<Button>(R.id.button_decimalPoint).setOnClickListener {
+    private fun setupDecimalBtn() {
+        activityMainBinding.buttonDecimalPoint.setOnClickListener {
             viewModel.addDecimalPoint()
-            handleHorizontalScroll(textView, scrollView)
+            handleHorizontalScroll(activityMainBinding.textViewInput, activityMainBinding.horizontalScrollViewInput)
         }
     }
-    private fun setupEqualsBtns(textView: TextView, scrollView: HorizontalScrollView) {
-        findViewById<Button>(R.id.button_equals).setOnClickListener {
+    private fun setupEqualsBtns() {
+        activityMainBinding.buttonEquals.setOnClickListener {
             viewModel.calculateResult(false)
-            handleHorizontalScroll(textView, scrollView)
+            handleHorizontalScroll(activityMainBinding.textViewResult, activityMainBinding.horizontalScrollViewResult)
         }
-        findViewById<Button>(R.id.button_round).setOnClickListener {
+        activityMainBinding.buttonRound.setOnClickListener {
             viewModel.calculateResult(true)
-            handleHorizontalScroll(textView, scrollView)
+            handleHorizontalScroll(activityMainBinding.textViewResult, activityMainBinding.horizontalScrollViewResult)
         }
     }
 
     private fun setupClearBtns() {
-        findViewById<Button>(R.id.button_clearAll).setOnClickListener {
+        activityMainBinding.buttonClearAll.setOnClickListener {
             viewModel.clearAll()
         }
-        findViewById<Button>(R.id.button_clearLast).setOnClickListener {
+        activityMainBinding.buttonClearLast.setOnClickListener {
             viewModel.clearLast()
         }
     }
 
-    private fun setupNumberBtns(textView: TextView, scrollView: HorizontalScrollView) {
-        val numberBtnIds = listOf(
-            R.id.button_0, R.id.button_1, R.id.button_2, R.id.button_3,
-            R.id.button_4, R.id.button_5, R.id.button_6, R.id.button_7,
-            R.id.button_8, R.id.button_9
+    private fun setupNumberBtns() {
+        val numberButtons = listOf(
+            activityMainBinding.button0, activityMainBinding.button1, activityMainBinding.button2, activityMainBinding.button3,
+            activityMainBinding.button4, activityMainBinding.button5, activityMainBinding.button6, activityMainBinding.button7,
+            activityMainBinding.button8, activityMainBinding.button9
         )
 
-        numberBtnIds.forEach { id ->
-            val button = findViewById<Button>(id)
+        numberButtons.forEach { button ->
             button.setOnClickListener {
                 viewModel.addNumber(button.text.toString())
-                handleHorizontalScroll(textView, scrollView)
+                handleHorizontalScroll(activityMainBinding.textViewInput, activityMainBinding.horizontalScrollViewInput)
             }
+
         }
     }
 
-    private fun setupOperatorBtns(textView: TextView, scrollView: HorizontalScrollView) {
-        val operatorsBtnIds = listOf(
-            R.id.button_multiply,
-            R.id.button_divide,
-            R.id.button_addition,
-            R.id.button_subtract
+    private fun setupOperatorBtns() {
+        val operatorButtons = listOf(
+            activityMainBinding.buttonMultiply, activityMainBinding.buttonDivide,
+            activityMainBinding.buttonAddition, activityMainBinding.buttonSubtract
         )
 
-        operatorsBtnIds.forEach { id ->
-            val button = findViewById<Button>(id)
+        operatorButtons.forEach { button ->
             button.setOnClickListener {
                 viewModel.addOperator(button.text.toString())
-                handleHorizontalScroll(textView, scrollView)
+                handleHorizontalScroll(activityMainBinding.textViewInput, activityMainBinding.horizontalScrollViewInput)
             }
+
         }
     }
 

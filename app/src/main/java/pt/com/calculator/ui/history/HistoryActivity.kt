@@ -4,16 +4,13 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import pt.com.calculator.ui.components.HistoryAdapter
-import pt.com.calculator.R
 import pt.com.calculator.data.model.AppDatabase
 import pt.com.calculator.data.repository.CalculationRepository
 import pt.com.calculator.data.room.CalculationDao
+import pt.com.calculator.databinding.ActivityHistoryBinding
 import pt.com.calculator.ui.main.MainActivity
 
 class HistoryActivity : AppCompatActivity() {
@@ -31,28 +28,26 @@ class HistoryActivity : AppCompatActivity() {
         HistoryViewModelFactory(calculationRepository)
     }
 
+    private lateinit var activityHistoryBinding: ActivityHistoryBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_history)
-
-        val emptyHistoryTV: TextView = findViewById(R.id.textView_emptyHistory)
-        val goBackBtn: Button = findViewById(R.id.button_goBack)
+        activityHistoryBinding = ActivityHistoryBinding.inflate(layoutInflater)
+        setContentView(activityHistoryBinding.root)
 
         viewModel.loadHistory()
 
         viewModel.history.observe(this) { history ->
             if(history.isNotEmpty()){
-                val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
-                recyclerView.layoutManager = LinearLayoutManager(this)
-                recyclerView.adapter = HistoryAdapter(history)
-                emptyHistoryTV.visibility = View.GONE
+                activityHistoryBinding.recyclerView.layoutManager = LinearLayoutManager(this)
+                activityHistoryBinding.recyclerView.adapter = HistoryAdapter(history)
+                activityHistoryBinding.textViewEmptyHistory.visibility = View.GONE
             }else{
-                emptyHistoryTV.visibility = View.VISIBLE
+                activityHistoryBinding.textViewEmptyHistory.visibility = View.VISIBLE
             }
-
         }
 
-        goBackBtn.setOnClickListener {
+        activityHistoryBinding.buttonGoBack.setOnClickListener {
             val intent: Intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
