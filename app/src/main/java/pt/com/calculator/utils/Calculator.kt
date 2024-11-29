@@ -24,16 +24,32 @@ class Calculator {
         println("After + | - : $expressionList")
 
         val result: CharSequence
-        println("Result: ${expressionList.first()}")
+
         if(roundResult){
             result = String.format("%.1f", expressionList.first().toString().toDouble())
         }else{
             result = expressionList.first()
         }
+        println("Result: $result")
         return result
     }
 
     private fun expressionToList(expression:CharSequence): MutableList<CharSequence> {
+        val expression = expression
+            .replace("\\s".toRegex(), "")
+            .replace("*", "×")
+            .replace("/", "÷")
+            .replace("-", "−")
+
+        val pattern = "^(\\d+(\\.\\d+)?)([+\\−×÷](?![+\\−×÷])\\d+(\\.\\d+)?)*\$"
+        val regex = pattern.toRegex()
+        if(!regex.containsMatchIn(expression)){
+            throw IllegalArgumentException("The expression is invalid. Please ensure that:\n" +
+                    "- No letters or unsupported symbols are included.\n" +
+                    "- Operators are not consecutive (e.g., '+-', '**').\n" +
+                    "- Decimal points are preceded by at least one digit (e.g., '0.06', not '.06').")
+        }
+
         var expressionList: MutableList<CharSequence> = mutableListOf()
         var currentNumber: CharSequence = ""
 
